@@ -1,4 +1,4 @@
-# Text Evaluation Tool (TMEval)
+# Threat Model Evaluation Tool (TMEval)
 
 TMEval is a modular Python application that evaluates text using multiple evaluation strategies. It leverages Large Language Models (LLMs) like Claude, ChatGPT, or Gemini both for subjective dimension-based evaluation and for semantic similarity assessment similar to BERTScore.
 
