@@ -1,0 +1,4 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Denial of Service | An attacker floods the backend Node.js application with a large number of requests, overwhelming the server and making the SUNDIAL platform unavailable to legitimate users. | Disruption of sustainability data management, preventing users from accessing critical information, delaying project timelines, and impacting decision-making processes. |
+| Denial of Service | An attacker exploits a vulnerability in the React frontend to inject malicious JavaScript code that consumes excessive client-side resources, rendering the application unusable for other users. | Front-end becomes unresponsive, preventing users from accessing sustainability data, disrupting workflows, and potentially exposing sensitive information to client-side attacks. |

@@ -1,0 +1,4 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Repudiation | A Data Supplier makes unauthorized changes to data within the LCA models, and the platform lacks sufficient audit logging to trace the changes back to the specific user. | Difficulty in identifying the responsible party for data corruption or malicious modifications, hindering accountability and potentially leading to legal or financial repercussions. |
+| Repudiation | An administrator performs sensitive actions, such as creating users or modifying permissions, but the platform does not maintain a comprehensive audit trail of these actions. | Inability to track administrative activities, making it difficult to investigate security incidents, identify unauthorized changes, and maintain system integrity. |

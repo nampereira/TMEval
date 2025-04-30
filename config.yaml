@@ -1,0 +1,133 @@
+# LLM API configurations
+llms:
+  claude:
+    api_key: ${CLAUDE_API_KEY}  # Using environment variables for API keys
+    model: "claude-3-opus-20240229"
+    api_url: "https://api.anthropic.com/v1/messages"
+    num_completions: 1  # Number of completion choices to generate (if we want a Scoring Function based on multiple generations, as proposed by the G-EVAL paper)
+    throttling:
+      requests_per_minute: 30  # Estimated rate limit 
+      retry_attempts: 3       # Number of retries on failure
+      backoff_factor: 2.0     # Exponential backoff factor
+  
+  chatgpt:
+    api_key: ${OPENAI_API_KEY}
+    model: "gpt-4"
+    api_url: "https://api.openai.com/v1/chat/completions"
+    num_completions: 1  # Number of completion choices to generate (if we want a Scoring Function based on multiple generations, as proposed by the G-EVAL paper)
+    throttling:
+      requests_per_minute: 60  # Estimated rate limit (depends on tier)
+      retry_attempts: 3
+      backoff_factor: 2.0
+  
+  gemini:
+    api_key: ${GEMINI_API_KEY}
+    model: "gemini-1.5-flash"  # Updated to use recommended non-deprecated model
+    api_url: "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
+    num_completions: 8  # Number of completion choices to generate (if we want a Scoring Function based on multiple generations, as proposed by the G-EVAL paper)
+    throttling:
+      requests_per_minute: 40  # Estimated rate limit 
+      retry_attempts: 3
+      backoff_factor: 2.0
+
+# Global throttling setting (applied to all LLMs if not specified individually)
+throttling:
+  enabled: true  # Master switch to enable/disable throttling
+  requests_per_minute: 20  # Default global setting if not specified per LLM
+  retry_attempts: 3
+  backoff_factor: 2.0
+
+# Specify which LLM to use (must match one of the keys in the llms section)
+active_llm: "gemini"
+
+# Evaluator configuration
+evaluator:
+  types: 
+    - "dimension"  # LLM-based dimension evaluation
+    - "bertscore"  # Local model BERTScore evaluation
+    - "bleu"       # BLEU score evaluation
+    - "rouge"      # ROUGE score evaluation
+  
+  # BERTScore-specific configuration
+  bertscore:
+    implementation: "local-model"  # Uses a local model for BERTScore
+    model: "roberta-large"  # Model to use for BERTScore (roberta-large is the default)
+  
+  # BLEU-specific configuration
+  bleu:
+    max_ngram: 4  # Maximum n-gram order to consider
+    weights: [0.25, 0.25, 0.25, 0.25]  # Weights for 1-gram, 2-gram, 3-gram, 4-gram
+  
+  # ROUGE-specific configuration
+  rouge:
+    use_stemmer: true  # Whether to use stemming for ROUGE calculation
+    rouge_types: ["rouge1", "rouge2", "rougeL"]  # Types of ROUGE scores to calculate
+
+# Dimensions for the dimension-based evaluator
+# Weights are used to compute the score; make sure they add to 1
+dimensions:
+  relevance:
+    prompt_file: "prompts/relevance.txt"
+    weight: 0.25
+  
+  consistency:
+    prompt_file: "prompts/consistency.txt"
+    weight: 0.25
+  
+  fluency:
+    prompt_file: "prompts/fluency.txt"
+    weight: 0.25
+  
+  # does not seem relevant for us
+  #coherence:
+  #  prompt_file: "prompts/coherence.txt"
+  #  weight: 0.25
+
+  # based on https://duc.nist.gov/duc2007/quality-questions.txt
+  nonredundancy:
+    prompt_file: "prompts/non-redundancy.txt"
+    weight: 0.25
+
+# Input file pairs and metadata
+files:
+  - reference_file: "input/references/dos.txt"
+    input_file: "input/inputs/dos.txt"
+    title: "Denial of Service"
+    description: "Table of Denial of Service Threats"
+  
+  # - reference_file: "input/references/eop.txt"
+  #   input_file: "input/inputs/eop.txt"
+  #   title: "Elevation of Priviledge"
+  #   description: "Table of Elevation of Priviledge Threats"
+
+  # - reference_file: "input/references/info-disclosure.txt"
+  #   input_file: "input/inputs/info-disclosure.txt"
+  #   title: "Information Disclosure"
+  #   description: "Table of Information Disclosure Threats"
+
+  # - reference_file: "input/references/repudiation.txt"
+  #   input_file: "input/inputs/repudiation.txt"
+  #   title: "Repudiation"
+  #   description: "Table of Repudiation Threats"
+
+  # - reference_file: "input/references/spoofing.txt"
+  #   input_file: "input/inputs/spoofing.txt"
+  #   title: "Spoofing"
+  #   description: "Table of Spoofing Threats"
+
+  # - reference_file: "input/references/tampering.txt"
+  #   input_file: "input/inputs/tampering.txt"
+  #   title: "Tampering"
+  #   description: "Table of Tampering Threats"
+
+# Input can also be specified with a folder
+#input:
+#  reference_dir: "input/references"  # Directory containing reference texts
+#  input_dir: "input/inputs"  # Directory containing input texts
+#  file_extension: ".txt"  # File extension to look for
+
+# Output configuration
+output:
+  format: "json"  # Could be json, csv, etc.
+  directory: "results"  # Directory to save results in
+  filename_template: "{input_filename}_eval.json"  # Template for result filenames

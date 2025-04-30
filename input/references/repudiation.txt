@@ -1,0 +1,3 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Repudiation | For example, if a user modifies information in an LCA model without permission, and the logs are not properly configured to track the action or the JWT is not validated correctly, they could claim that they were not the one who made the change. | The inability to trace who made a change could undermine the system’s reliability and accuracy. |

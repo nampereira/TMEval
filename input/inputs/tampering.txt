@@ -1,0 +1,4 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Tampering | An attacker gains access to the database container and modifies stored sustainability data, altering the results of environmental, economic, and social assessments. | Tampered data could lead to incorrect conclusions, flawed decision-making regarding sustainability initiatives, and potential regulatory non-compliance. |
+| Tampering | An attacker intercepts and modifies the JWT token stored in localStorage, injecting malicious payloads or altering user permissions. | The attacker could elevate their privileges, gain access to restricted data, or execute unauthorized actions within the SUNDIAL platform. |

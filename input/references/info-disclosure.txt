@@ -1,0 +1,4 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Information Disclosure | Confidential information may be accidentally stored in the source code and accessed by attackers (source code breaches). | Anyone with access to the code can steal or abuse it. |
+| Information Disclosure | If the configuration of the VPN, firewall, proxy, or containers is not secure, sensitive data may be exposed during the traffic between components. | It compromises the integrity and confidentiality of the transmitted information. |

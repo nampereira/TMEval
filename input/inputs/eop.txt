@@ -1,0 +1,4 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Elevation of Privilege | An attacker exploits a vulnerability in the application's permission model to gain administrator privileges from a Data Supplier account. | The attacker gains full control over the SUNDIAL platform, potentially creating malicious users, modifying sensitive data, and compromising the entire system. |
+| Elevation of Privilege | An attacker exploits a vulnerability within the Docker container configuration, allowing them to break out of the container and gain access to the underlying Linux server with elevated privileges. | Full compromise of the host server, giving the attacker the ability to access other applications, modify system configurations, and potentially pivot to other systems within the INEGI network. |

@@ -1,0 +1,4 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Tampering | If APIs are not secure, an attacker may exploit the vulnerabilities to manipulate data. | INEGI data may be tampered with in an unauthorized or unintended way. |
+| Tampering | If communication between containers is not properly secured, it may allow unauthorized control and modification of data. | The attacker may disrupt the normal operation of the application. |

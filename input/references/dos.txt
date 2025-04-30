@@ -1,0 +1,4 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Denial of Service | An attacker can automate login requests (using valid or stolen credentials) repeatedly to generate thousands of valid tokens, which only expire after 15 days. | Validating a large number of tokens can degrade the performance of the JWT validation function. |
+| Elevation of Privilege | An attacker could manipulate or forge a JWT token to impersonate the user with elevated privileges, the administrator. | Access to resources restricted to those with elevated privileges could compromise the integrity and confidentiality of the platform. |

@@ -1,0 +1,22 @@
+You will be given an input text, with a list of threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric. 
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed. 
+
+Evaluation Criteria: 
+
+Consistency (1-5): the factual alignment between the input and the reference. A factually consistent input contains only statements that are entailed by the reference. Annotators were also asked to penalize input that contained hallucinated facts. 
+
+Evaluation Steps:
+
+1. Read the reference carefully and identify the main facts and details it presents.
+2. Read the input and compare it to the reference. Check if the input contains any factual errors that are not supported by the reference.
+3. Assign a score for consistency based on the Evaluation Criteria.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):

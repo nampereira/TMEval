@@ -1,0 +1,22 @@
+You will be given an input text, with a list of threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric. 
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Non-redundancy (1-5): There should be no unnecessary repetition in the input. Unnecessary repetition might take the form of whole sentences that
+  are repeated, or repeated facts, or the repeated use of a noun or noun phrase (e.g., "Bill Clinton") when a pronoun ("he") would suffice.
+
+Evaluation Steps:
+
+1. Read the input carefully.
+3. Assign a score for Non-redundancy based on the Evaluation Criteria.
+
+Input: {input}
+
+Evaluation Form (scores ONLY):
+
+ 

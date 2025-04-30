@@ -1,0 +1,4 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Information Disclosure | An attacker exploits a vulnerability in the frontend React application to access the JWT token stored in localStorage of other users. | The attacker gains unauthorized access to other users' accounts, potentially exposing sensitive sustainability data and allowing them to perform actions on behalf of those users. |
+| Information Disclosure | An attacker exploits a vulnerability in the backend Node.js application or the API endpoints to directly access the database and extract sensitive sustainability data, including Top Secret information. | Massive data breach, exposing confidential information about sustainability projects, potentially leading to reputational damage, legal liabilities, and competitive disadvantages. |

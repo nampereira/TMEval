@@ -1,0 +1,4 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Spoofing | An attacker intercepts the 2FA link sent to a legitimate user's email and uses it to gain unauthorized access to the SUNDIAL platform, impersonating the user. | The attacker gains access to sensitive sustainability data related to the RELiEF project, potentially leading to data breaches, unauthorized modifications, or misuse of information. |
+| Spoofing | An attacker spoofs email addresses to send phishing emails to SUNDIAL users, tricking them into revealing their credentials and bypassing the MFA. | Compromised user accounts could allow attackers to access and manipulate sensitive sustainability data, create malicious LCA models, or gain administrative privileges. |

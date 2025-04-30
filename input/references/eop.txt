@@ -1,0 +1,3 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Elevation of Privilege | An attacker could manipulate or forge a JWT token to impersonate the user with elevated privileges, the administrator. | Access to resources restricted to those with elevated privileges could compromise the integrity and confidentiality of the platform. |

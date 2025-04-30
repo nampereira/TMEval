@@ -1,0 +1,5 @@
+| Threat Type | Scenario | Potential Impact |
+|-------------|----------|------------------|
+| Spoofing | The platform uses JWT tokens for authentication and authorization, but the tokens are stored in the browser's localStorage. This makes them vulnerable to XSS attacks, where an attacker can inject malicious code into the frontend to steal the JWT token. | Attacker acts as a legitimate user, thereby gaining unauthorized access to the platform's data and functionalities. |
+| Spoofing | During the 2FA process, an attacker may manipulate the process (e.g., through phishing) to gain access to the application as the user. | Unauthorized access to the platform's features and data. |
+| Spoofing | The absence of origin validation for the access link generated and sent via email may allow anyone with access to the email to gain access to the platform. | Unauthorized access to the platform's features and data. |
