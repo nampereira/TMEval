@@ -44,16 +44,16 @@ python install_dependencies.py
 TMEval provides multiple ways to evaluate text:
 
 #### Dimension-based Evaluation (LLM-as-a-Judge)
-This is based on [G-EVAL](https://arxiv.org/pdf/2303.16634) and uses an LLM to evaluate different dimensions of the generated input against a reference.
+This is inpired on [G-EVAL](https://arxiv.org/pdf/2303.16634) and uses an LLM to evaluate different dimensions of the generated input against a reference.
 
-Each dimension is implemented by a specific prompt (see `prompts` folder). It currently has the following dimentions:
+Each dimension is implemented by a specific prompt (see `prompts` folder). It currently has the following dimensions:
 
 - **Relevance**: How well the input text captures important content from the reference
 - **Consistency**: Factual alignment between the input text and reference text
 - **Fluency**: Quality of individual sentences in the input text
 - **Non-Redundancy**: No unnecessary repetition.
 
-- **TODO: Analyse results**
+- **TODO: Analyse results in detail**
 
 #### LLM-based BERTScore Evaluation
 - Uses an LLM to assess semantic similarity between reference and input texts
