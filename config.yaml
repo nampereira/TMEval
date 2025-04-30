@@ -52,6 +52,9 @@ evaluator:
   bertscore:
     implementation: "local-model"  # Uses a local model for BERTScore
     model: "roberta-large"  # Model to use for BERTScore (roberta-large is the default)
+    idf: true  # Use inverse document frequency weighting
+    rescale_with_baseline: true  # Scale scores to be more interpretable
+    verbose: false  # Set to true to see detailed progress and warnings
   
   # BLEU-specific configuration
   bleu:

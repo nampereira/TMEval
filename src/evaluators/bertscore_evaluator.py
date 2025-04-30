@@ -2,6 +2,8 @@ import os
 from typing import Dict, Any, List
 from .base_evaluator import BaseEvaluator
 import torch
+import warnings
+import logging
 
 class BERTScoreEvaluator(BaseEvaluator):
     """Evaluates input texts using BERTScore metrics with a local model."""
@@ -16,6 +18,19 @@ class BERTScoreEvaluator(BaseEvaluator):
         super().__init__(config)
         self.model_name = config.get('evaluator', {}).get('bertscore', {}).get('model', 'roberta-large')
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.idf = config.get('evaluator', {}).get('bertscore', {}).get('idf', True)
+        self.rescale_with_baseline = config.get('evaluator', {}).get('bertscore', {}).get('rescale_with_baseline', True)
+        self.verbose = config.get('evaluator', {}).get('bertscore', {}).get('verbose', False)
+        
+        # Filter out transformer model initialization warnings if not in verbose mode
+        if not self.verbose:
+            # Filter transformers model warnings
+            logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
+            # Suppress specific warnings about weights not initialized
+            warnings.filterwarnings(
+                "ignore", 
+                message="Some weights of .* were not initialized from the model checkpoint .*"
+            )
         
         # Import bert_score only when needed to avoid loading the model until evaluation
         self.bert_score = None
@@ -23,6 +38,7 @@ class BERTScoreEvaluator(BaseEvaluator):
         # Log initialization information
         print(f"Initializing BERTScore evaluator with model: {self.model_name}")
         print(f"Using device: {self.device}")
+        print(f"Note: Initialization warnings about model weights are expected and can be safely ignored.")
     
     def evaluate(self, reference: str, input_text: str) -> Dict[str, Any]:
         """
@@ -58,15 +74,25 @@ class BERTScoreEvaluator(BaseEvaluator):
         # Calculate BERTScore
         try:
             print(f"Calculating BERTScore using {self.model_name}...")
-            P, R, F1 = self.bert_score.score(
-                cands=input_sentences,
-                refs=reference_sentences,
-                model_type=self.model_name,
-                device=self.device,
-                lang="en",  # Default to English, could be made configurable
-                verbose=True,  # Shows progress
-                rescale_with_baseline=True  # Scales scores to be more interpretable
-            )
+            
+            # Temporarily disable specific warnings during calculation
+            with warnings.catch_warnings():
+                if not self.verbose:
+                    warnings.filterwarnings(
+                        "ignore", 
+                        message="Some weights of .* were not initialized from the model checkpoint .*"
+                    )
+                
+                P, R, F1 = self.bert_score.score(
+                    cands=input_sentences,
+                    refs=reference_sentences,
+                    model_type=self.model_name,
+                    device=self.device,
+                    lang="en",  # Default to English, could be made configurable
+                    verbose=self.verbose,  # Controls showing progress
+                    idf=self.idf,  # Use inverse document frequency weighting
+                    rescale_with_baseline=self.rescale_with_baseline  # Scales scores to be more interpretable
+                )
             
             # Convert PyTorch tensors to Python lists
             precision_scores = P.tolist()
@@ -96,6 +122,8 @@ class BERTScoreEvaluator(BaseEvaluator):
                 'evaluator_type': 'bertscore',
                 'implementation': 'local-model',
                 'model': self.model_name,
+                'idf': self.idf,
+                'rescale_with_baseline': self.rescale_with_baseline,
                 'scores': {
                     'overall': {
                         'precision': overall_precision,
