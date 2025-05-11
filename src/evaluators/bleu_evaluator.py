@@ -76,9 +76,13 @@ class BLEUEvaluator(BaseEvaluator):
             }
             
         try:
+            # Clean the reference and input texts.
+            reference_cleaned = self._clean_text(reference)
+            input_cleaned = self._clean_text(input_text)
+
             # Tokenize the texts into sentences and words
-            reference_sentences = self._tokenize_into_sentences(reference)
-            input_sentences = self._tokenize_into_sentences(input_text)
+            reference_sentences = self._tokenize_into_sentences(reference_cleaned)
+            input_sentences = self._tokenize_into_sentences(input_cleaned)
             
             # Tokenize each sentence into words
             reference_tokens = [self._tokenize_into_words(sent) for sent in reference_sentences]
@@ -109,16 +113,25 @@ class BLEUEvaluator(BaseEvaluator):
             # Calculate sentence-level BLEU scores
             sentence_bleu_scores = []
             for i, input_sent_tokens in enumerate(input_tokens):
-                # For each input sentence, calculate BLEU against all reference sentences
-                score = self._calculate_bleu(
-                    references=[reference_tokens_flat],  # Compare against all reference text
-                    hypothesis=input_sent_tokens
-                )
+                best_score = 0 
+                best_reference = None 
+
+                # For each sentence in the reference calculate the BLEU score
+                for reference_sent_tokens in reference_tokens:
+                    score = self._calculate_bleu(
+                        references=[reference_sent_tokens],
+                        hypothesis=input_sent_tokens
+                    )
+                    
+                    # If the BLEU score is better update the best match.
+                    if score > best_score:
+                        best_score = score
+                        best_reference = reference_sentences[reference_tokens.index(reference_sent_tokens)]
                 
-                # Add to results
                 sentence_bleu_scores.append({
                     'input': input_sentences[i],
-                    'bleu': score
+                    'best_reference': best_reference,
+                    'bleu_for_this_sentence': best_score
                 })
             
             # Prepare and return results
@@ -153,12 +166,13 @@ class BLEUEvaluator(BaseEvaluator):
         Returns:
             List of sentences
         """
-        try:
-            return nltk.sent_tokenize(text)
-        except Exception as e:
-            # Fallback tokenization
-            print(f"Warning: NLTK sentence tokenization failed: {e}")
-            return [s.strip() for s in text.split('.') if s.strip()]
+        # try:
+        #     return nltk.sent_tokenize(text)
+        # except Exception as e:
+        #     # Fallback tokenization
+        #     print(f"Warning: NLTK sentence tokenization failed: {e}")
+        #     return [s.strip() for s in text.split('.') if s.strip()]
+        return [line.strip() for line in text.strip().split('\n') if line.strip()]
     
     def _tokenize_into_words(self, sentence: str) -> List[str]:
         """
@@ -214,3 +228,58 @@ class BLEUEvaluator(BaseEvaluator):
         except Exception as e:
             print(f"Error in BLEU calculation: {e}")
             return 0.0
+
+    # Preprocessing text by removing initial lines and threat tags - STRIDEGPT tool
+    def _clean_text(self, text: str) -> str:
+        """
+        Remove the first two lines, STRIDE labels, and adjusts the final punctuation.
+
+        Rules:
+        - Removes STRIDE labels (e.g., | Tampering |)
+        - Replaces the last '|' of the line with a period
+        - Removes any remaining pipes '|'
+
+        Args:
+            text: The text to be cleaned.
+
+        Returns:
+            Cleaned text.
+        """
+        lines = text.split('\n')
+        lines = lines[2:]  # Remove the first two lines
+
+        threat_labels = [
+            "Spoofing", "Tampering", "Repudiation",
+            "Information Disclosure", "Denial of Service",
+            "Elevation of Privilege"
+        ]
+
+        cleaned_lines = []
+        for line in lines:
+            # Remove STRIDE labels with or without spaces
+            for label in threat_labels:
+                for pattern in [
+                    f"| {label} |", f"|{label} |", f"| {label}|", f"|{label}|"
+                ]:
+                    line = line.replace(pattern, "")
+
+            # If there's at least one pipe, treat the last as end of sentence
+            if '|' in line:
+                parts = line.rsplit('|', 1)
+                before_last = parts[0].replace('|', '').strip()
+                after_last = parts[1].strip().lstrip('.').strip()
+
+                if not before_last.endswith('.'):
+                    before_last += '.'
+
+                line = f"{before_last} {after_last}"
+            else:
+                line = line.strip()
+
+            cleaned_lines.append(line)
+
+        return '\n'.join(cleaned_lines)
+
+
+
+
