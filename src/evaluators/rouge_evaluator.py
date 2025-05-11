@@ -77,6 +77,11 @@ class ROUGEEvaluator(BaseEvaluator):
         Returns:
             Dictionary of ROUGE score results
         """
+
+        # Clean reference and input text before evaluation
+        reference = self._clean_text(reference)
+        input_text = self._clean_text(input_text)
+
         # Check if NLTK resources are available
         if not self.nltk_resources_available:
             return {
@@ -94,8 +99,8 @@ class ROUGEEvaluator(BaseEvaluator):
             from rouge_score import rouge_scorer
             
             # Tokenize the texts into sentences
-            reference_sentences = nltk.sent_tokenize(reference)
-            input_sentences = nltk.sent_tokenize(input_text)
+            reference_sentences = self._tokenize_into_sentences(reference)
+            input_sentences = self._tokenize_into_sentences(input_text)
             
             # Set up the ROUGE scorer
             scorer = rouge_scorer.RougeScorer(
@@ -119,24 +124,32 @@ class ROUGEEvaluator(BaseEvaluator):
             sentence_rouge_scores = []
             
             for i, input_sent in enumerate(input_sentences):
-                # For brevity, we'll compare each input sentence against the whole reference
-                # For a more granular approach, you could match each input sentence with
-                # the most similar reference sentence
-                sent_scores = scorer.score(reference, input_sent)
-                
-                # Convert scores to dictionary
-                sent_dict = {}
-                for rouge_type, score_obj in sent_scores.items():
-                    sent_dict[rouge_type] = {
-                        'precision': score_obj.precision,
-                        'recall': score_obj.recall,
-                        'fmeasure': score_obj.fmeasure
-                    }
-                
-                # Add to results
+                # For each input sentence, compare it with all reference sentences
+                best_score = {rouge_type: {'fmeasure': 0, 'precision': 0, 'recall': 0} for rouge_type in self.rouge_types}
+                best_reference = {rouge_type: None for rouge_type in self.rouge_types}
+
+                for reference_sent in reference_sentences:
+                    # Compare input sentence with reference sentence for each ROUGE type
+                    sent_scores = scorer.score(reference_sent, input_sent)
+
+                    # Update the best match for each ROUGE type
+                    for rouge_type in self.rouge_types:
+                        sent_score = sent_scores[rouge_type]
+                        
+                        # Compare fmeasure, precision, recall values
+                        if sent_score.fmeasure > best_score[rouge_type]['fmeasure']:
+                            best_score[rouge_type] = {
+                                'fmeasure': sent_score.fmeasure,
+                                'precision': sent_score.precision,
+                                'recall': sent_score.recall
+                            }
+                            best_reference[rouge_type] = reference_sent
+
+                # Store the best match and ROUGE scores for each input sentence
                 sentence_rouge_scores.append({
                     'input': input_sent,
-                    'scores': sent_dict
+                    'best_reference': best_reference,
+                    'rouge_for_this_sentence': best_score
                 })
             
             # Prepare and return results
@@ -159,6 +172,24 @@ class ROUGEEvaluator(BaseEvaluator):
                 'evaluator_type': 'rouge',
                 'error': str(e)
             }
+        
+    def _tokenize_into_sentences(self, text: str) -> List[str]:
+        """
+        Split text into sentences.
+        
+        Args:
+            text: Text to split
+            
+        Returns:
+            List of sentences
+        """
+        # try:
+        #     return nltk.sent_tokenize(text)
+        # except Exception as e:
+        #     # Fallback tokenization
+        #     print(f"Warning: NLTK sentence tokenization failed: {e}")
+        #     return [s.strip() for s in text.split('.') if s.strip()]
+        return [line.strip() for line in text.strip().split('\n') if line.strip()]
 
     def _fallback_rouge(self, reference: str, input_text: str) -> Dict[str, Any]:
         """
