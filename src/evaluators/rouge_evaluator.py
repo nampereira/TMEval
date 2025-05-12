@@ -99,14 +99,22 @@ class ROUGEEvaluator(BaseEvaluator):
             from rouge_score import rouge_scorer
             
             # Tokenize the texts into sentences
-            reference_sentences = self._tokenize_into_sentences(reference)
-            input_sentences = self._tokenize_into_sentences(input_text)
+            reference_sentences_raw = self._tokenize_into_sentences(reference)
+            input_sentences_raw = self._tokenize_into_sentences(input_text)
+
+            # Remove stopwords (used only for scoring)
+            reference_sentences_clean = [self.remove_stopwords_rouge(sent) for sent in reference_sentences_raw]
+            input_sentences_clean = [self.remove_stopwords_rouge(sent) for sent in input_sentences_raw]
             
             # Set up the ROUGE scorer
             scorer = rouge_scorer.RougeScorer(
                 self.rouge_types, 
                 use_stemmer=self.use_stemmer
             )
+
+            # Get rid of stopwords for the entire text
+            reference = self.remove_stopwords_rouge(reference)
+            input_text = self.remove_stopwords_rouge(input_text)
             
             # Calculate ROUGE for the entire text
             overall_scores = scorer.score(reference, input_text)
@@ -123,35 +131,36 @@ class ROUGEEvaluator(BaseEvaluator):
             # Calculate sentence-level ROUGE scores
             sentence_rouge_scores = []
             
-            for i, input_sent in enumerate(input_sentences):
-                # For each input sentence, compare it with all reference sentences
+            for i, input_sent_clean in enumerate(input_sentences_clean):
+                input_sent_raw = input_sentences_raw[i]
+                
                 best_score = {rouge_type: {'fmeasure': 0, 'precision': 0, 'recall': 0} for rouge_type in self.rouge_types}
                 best_reference = {rouge_type: None for rouge_type in self.rouge_types}
+                best_reference_raw = {rouge_type: None for rouge_type in self.rouge_types}
+                
+                for j, reference_sent_clean in enumerate(reference_sentences_clean):
+                    reference_sent_raw = reference_sentences_raw[j]
+                    sent_scores = scorer.score(reference_sent_clean, input_sent_clean)
 
-                for reference_sent in reference_sentences:
-                    # Compare input sentence with reference sentence for each ROUGE type
-                    sent_scores = scorer.score(reference_sent, input_sent)
-
-                    # Update the best match for each ROUGE type
                     for rouge_type in self.rouge_types:
                         sent_score = sent_scores[rouge_type]
-                        
-                        # Compare fmeasure, precision, recall values
                         if sent_score.fmeasure > best_score[rouge_type]['fmeasure']:
                             best_score[rouge_type] = {
                                 'fmeasure': sent_score.fmeasure,
                                 'precision': sent_score.precision,
                                 'recall': sent_score.recall
                             }
-                            best_reference[rouge_type] = reference_sent
+                            best_reference[rouge_type] = reference_sent_clean
+                            best_reference_raw[rouge_type] = reference_sent_raw
+
 
                 # Store the best match and ROUGE scores for each input sentence
                 sentence_rouge_scores.append({
-                    'input': input_sent,
-                    'best_reference': best_reference,
+                    'input': input_sent_raw,
+                    'best_reference': best_reference_raw,
                     'rouge_for_this_sentence': best_score
                 })
-            
+
             # Prepare and return results
             results = {
                 'evaluator_type': 'rouge',

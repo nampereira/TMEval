@@ -88,6 +88,10 @@ class BLEUEvaluator(BaseEvaluator):
             reference_tokens = [self._tokenize_into_words(sent) for sent in reference_sentences]
             input_tokens = [self._tokenize_into_words(sent) for sent in input_sentences]
             
+            # Get rid of stopwords
+            input_tokens = [self.remove_stopwords_bleu(tokens) for tokens in input_tokens]
+            reference_tokens = [self.remove_stopwords_bleu(tokens) for tokens in reference_tokens]
+            
             # Flatten reference sentences for corpus-level BLEU
             reference_tokens_flat = [token for sent in reference_tokens for token in sent]
             input_tokens_flat = [token for sent in input_tokens for token in sent]
