@@ -12,6 +12,35 @@ class BaseEvaluator(ABC):
             config: Full configuration dictionary
         """
         self.config = config
+
+        self.stopwords = set([
+            "i", "me", "my", "myself", "we", "our", "ours", "ourselves",
+            "you", "your", "yours", "yourself", "yourselves", "he", "him",
+            "his", "himself", "she", "her", "hers", "herself", "it", "its",
+            "itself", "they", "them", "their", "theirs", "themselves",
+            "what", "which", "who", "whom", "this", "that", "these", "those",
+            "am", "is", "are", "was", "were", "be", "been", "being", "have",
+            "has", "had", "having", "do", "does", "did", "doing", "a", "an",
+            "the", "and", "but", "if", "or", "because", "as", "until", "while",
+            "of", "at", "by", "for", "with", "about", "against", "between",
+            "into", "through", "during", "before", "after", "above", "below",
+            "to", "from", "up", "down", "in", "out", "on", "off", "over", "under",
+            "again", "further", "then", "once", "here", "there", "when", "where",
+            "why", "how", "all", "any", "both", "each", "few", "more", "most",
+            "other", "some", "such", "no", "nor", "not", "only", "own", "same",
+            "so", "than", "too", "very", "s", "t", "can", "will", "just", "don",
+            "should", "now"
+        ])
+
+    def remove_stopwords_bleu(self, tokens):
+        """Remove stopwords from a list of tokens."""
+        return [t for t in tokens if t.lower() not in self.stopwords]
+    
+    def remove_stopwords_rouge(self, text: str) -> str:
+        """Remove stopwords from a given text."""
+        tokens = text.split()
+        filtered_tokens = [token for token in tokens if token.lower() not in self.stopwords]
+        return ' '.join(filtered_tokens)
     
     @abstractmethod
     def evaluate(self, reference: str, input_text: str) -> Dict[str, Any]:
