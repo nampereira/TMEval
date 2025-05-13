@@ -76,19 +76,13 @@ dimensions:
   consistency:
     prompt_file: "prompts/consistency.txt"
     weight: 0.25
-  
-  fluency:
-    prompt_file: "prompts/fluency.txt"
-    weight: 0.25
-  
-  # does not seem relevant for us
-  #coherence:
-  #  prompt_file: "prompts/coherence.txt"
-  #  weight: 0.25
 
-  # based on https://duc.nist.gov/duc2007/quality-questions.txt
-  nonredundancy:
-    prompt_file: "prompts/non-redundancy.txt"
+  coverage:
+    prompt_file: "prompts/coverage.txt"
+    weight: 0.25
+
+  plausibility:
+    prompt_file: "prompts/plausibility.txt"
     weight: 0.25
 
 # Input file pairs and metadata
