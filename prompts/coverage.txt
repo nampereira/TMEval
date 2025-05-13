@@ -1,0 +1,23 @@
+You will be given an input text, with a list of threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Coverage (1-5): Assesses the extent of the input in relation to the reference, checking if important and contextually relevant threats have been covered.
+
+Evaluation Steps:
+
+1. Read the input and the reference threat lists carefully.
+2. Compare the input to the reference and identify the key threats mentioned.
+3. Assess how well the input covers the important and relevant threats in the reference.
+4. Assign a score for coverage based on the evaluation criteria.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):
