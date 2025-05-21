@@ -87,26 +87,6 @@ dimensions:
 
 # Input file pairs and metadata
 files:
-  - reference_file: "input/references/dos.txt"
-    input_file: "input/inputs/dos.txt"
-    title: "Denial of Service"
-    description: "Table of Denial of Service Threats"
-  
-  - reference_file: "input/references/eop.txt"
-    input_file: "input/inputs/eop.txt"
-    title: "Elevation of Priviledge"
-    description: "Table of Elevation of Priviledge Threats"
-
-  - reference_file: "input/references/info-disclosure.txt"
-    input_file: "input/inputs/info-disclosure.txt"
-    title: "Information Disclosure"
-    description: "Table of Information Disclosure Threats"
-
-  - reference_file: "input/references/repudiation.txt"
-    input_file: "input/inputs/repudiation.txt"
-    title: "Repudiation"
-    description: "Table of Repudiation Threats"
-
   - reference_file: "input/references/spoofing.txt"
     input_file: "input/inputs/spoofing.txt"
     title: "Spoofing"
@@ -116,6 +96,26 @@ files:
     input_file: "input/inputs/tampering.txt"
     title: "Tampering"
     description: "Table of Tampering Threats"
+
+  - reference_file: "input/references/repudiation.txt"
+    input_file: "input/inputs/repudiation.txt"
+    title: "Repudiation"
+    description: "Table of Repudiation Threats"
+
+  - reference_file: "input/references/info-disclosure.txt"
+    input_file: "input/inputs/info-disclosure.txt"
+    title: "Information Disclosure"
+    description: "Table of Information Disclosure Threats"
+
+  - reference_file: "input/references/dos.txt"
+    input_file: "input/inputs/dos.txt"
+    title: "Denial of Service"
+    description: "Table of Denial of Service Threats"
+  
+  - reference_file: "input/references/eop.txt"
+    input_file: "input/inputs/eop.txt"
+    title: "Elevation of Privilege"
+    description: "Table of Elevation of Privilege Threats"
 
 # Input can also be specified with a folder
 #input:

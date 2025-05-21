@@ -5,6 +5,11 @@ from src.evaluators import get_evaluator
 from src.results_manager import ResultsManager
 from src.file_processor import FileProcessor
 from dotenv import load_dotenv
+# Dashboards
+from src.dashboards.bleu_dashboard import launch_bleu_dashboard
+from src.dashboards.rouge_dashboard import launch_rouge_dashboard
+from src.dashboards.dimension_dashboard import launch_dimension_dashboard
+from src.dashboards.bertscore_dashboard import launch_bertscore_dashboard
 
 def main():
     """Main entry point for the evaluation script."""
@@ -122,28 +127,27 @@ def process_configured_files(config, evaluator, results_manager):
     
     print(f"Found {len(file_pairs)} reference-input pairs to evaluate.")
     
-    # Display information about the evaluators being used
+    # Display info about evaluators
     if hasattr(evaluator, 'evaluator_types'):
         print(f"Using multiple evaluators: {', '.join(evaluator.evaluator_types)}")
     else:
         evaluator_type = evaluator.__class__.__name__.replace('Evaluator', '').lower()
         print(f"Using evaluator: {evaluator_type}")
     
-    # If using dimension evaluator, show LLM info
     if 'DimensionEvaluator' in str(evaluator.__class__) or hasattr(evaluator, 'evaluators'):
         active_llm = config.get('active_llm', 'claude')
         num_completions = config.get('llms', {}).get(active_llm, {}).get('num_completions', 1)
         print(f"Using LLM: {active_llm} with {num_completions} completion(s) per prompt")
     
+    all_results = []
+    
     for pair in file_pairs:
         reference_file = pair['reference_file']
         input_file = pair['input_file']
         
-        # Read file contents
         reference, reference_filename = file_processor.read_file(reference_file)
         input_text, input_filename = file_processor.read_file(input_file)
         
-        # Get metadata
         title = pair.get('title', '')
         description = pair.get('description', '')
         tags = pair.get('tags', [])
@@ -152,13 +156,31 @@ def process_configured_files(config, evaluator, results_manager):
         if title:
             print(f"Title: {title}")
         
-        # Evaluate and save results
         results = evaluator.evaluate(reference, input_text)
         output_path = results_manager.save_results(
             results, reference, input_text, reference_filename, input_filename,
             title, description, tags
         )
         print(f"Results saved to {output_path}")
+        
+        # Add title to use in the dashboard
+        results['title'] = title or os.path.splitext(input_filename)[0]
+        all_results.append(results)
+    
+    # Launch the dashboard according to the evaluator
+    evaluator_type = evaluator.__class__.__name__.replace('Evaluator', '').lower()
+    if evaluator_type == 'bleu':
+        all_results = results_manager.load_all_results(evaluator_type)
+        launch_bleu_dashboard(all_results)
+    elif evaluator_type == 'rouge':
+        all_results = results_manager.load_all_results(evaluator_type)
+        launch_rouge_dashboard(all_results)
+    elif evaluator_type == 'dimension':
+        launch_dimension_dashboard(all_results)
+    elif evaluator_type == 'bertscore':
+        launch_bertscore_dashboard(all_results)
+    else:
+        print(f"No dashboard available for evaluator type: {evaluator_type}")
 
 if __name__ == '__main__':
     main()
