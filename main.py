@@ -176,8 +176,10 @@ def process_configured_files(config, evaluator, results_manager):
         all_results = results_manager.load_all_results(evaluator_type)
         launch_rouge_dashboard(all_results)
     elif evaluator_type == 'dimension':
+        all_results = results_manager.load_all_results(evaluator_type)
         launch_dimension_dashboard(all_results)
     elif evaluator_type == 'bertscore':
+        all_results = results_manager.load_all_results(evaluator_type)
         launch_bertscore_dashboard(all_results)
     else:
         print(f"No dashboard available for evaluator type: {evaluator_type}")
