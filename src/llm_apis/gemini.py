@@ -23,6 +23,7 @@ class GeminiApi(LLMApi):
             # First, try to use the explicitly configured model
             try:
                 print(f"Attempting to initialize with configured model: {self.configured_model_name}")
+                self.model_name = self.configured_model_name
                 self.model_instance = genai.GenerativeModel(model_name=self.configured_model_name)
                 print(f"Successfully initialized model: {self.configured_model_name}")
                 return
@@ -81,14 +82,21 @@ class GeminiApi(LLMApi):
             if selected_model:
                 print(f"Initializing with model: {selected_model.name}")
                 self.model_instance = genai.GenerativeModel(model_name=selected_model.name)
+            elif self.configured_model_name:
+                self.model_instance = genai.GenerativeModel(model_name=self.configured_model_name)
             else:
                 print("No suitable Gemini models found")
                 self.model_instance = None
+                self.model_name = "gemini"
                 
         except Exception as e:
             print(f"Error initializing Gemini API: {e}")
             self.model_instance = None
-    
+
+    def get_model_name(self) -> str:
+        """Returns the name of the initialized Gemini model."""
+        return getattr(self, 'model_name', 'gemini')
+
     def _generate(self, prompt: str) -> List[str]:
         """
         Generate one or more responses from Gemini.
