@@ -26,6 +26,15 @@ class DimensionEvaluator(BaseEvaluator):
         # Initialize only the active LLM API
         llm_config = config.get('llms', {}).get(self.active_llm, {})
         self.llm_api = get_llm_api(self.active_llm, llm_config, config)
+
+        # Obtain the model version
+        if self.active_llm == 'gemini':
+            get_name_func = getattr(self.llm_api, 'get_model_name', None)
+            if callable(get_name_func):
+                detailed_model_name = get_name_func()
+                if detailed_model_name.startswith("gemini-"):
+                    detailed_model_name = detailed_model_name[len("gemini-"):]
+                self.active_llm = f"gemini-{detailed_model_name}"
         
         # Get the number of completions to generate
         self.num_completions = llm_config.get('num_completions', 1)
@@ -41,9 +50,13 @@ class DimensionEvaluator(BaseEvaluator):
         Returns:
             Dictionary of results by dimension
         """
+        llm_name = self.active_llm
+        if hasattr(self.llm_api, 'active_model_name'):
+            llm_name = self.llm_api.active_model_name
+
         results = {
             'evaluator_type': 'dimension',
-            'llm': self.active_llm,
+            'llm': llm_name,
             'num_completions': self.num_completions,
             'dimensions': {}
         }
