@@ -10,6 +10,7 @@ from src.dashboards.bleu_dashboard import launch_bleu_dashboard
 from src.dashboards.rouge_dashboard import launch_rouge_dashboard
 from src.dashboards.dimension_dashboard import launch_dimension_dashboard
 from src.dashboards.bertscore_dashboard import launch_bertscore_dashboard
+from src.dashboards.multi_dashboard import launch_multi_dashboard
 
 def main():
     """Main entry point for the evaluation script."""
@@ -31,6 +32,7 @@ def main():
     parser.add_argument('--title', type=str, help='Title for the text pair (for command-line input)')
     parser.add_argument('--description', type=str, help='Description for the text pair (for command-line input)')
     parser.add_argument('--num-completions', type=int, help='Number of completions to generate per prompt')
+    parser.add_argument('--run-id', type=str, help='Optional run ID to use for this evaluation run')
     args = parser.parse_args()
     
     # Load configuration
@@ -46,7 +48,13 @@ def main():
             config['active_llm'] = args.llm
         else:
             print(f"Warning: LLM '{args.llm}' is not configured. Using the default LLM instead.")
-    
+    if args.run_id:
+        config['run_id'] = args.run_id
+    elif args.evaluator or args.evaluators:
+        prompt = "\033[95mEnter the test name: \033[0m"
+        run_id = input(prompt)
+        config['run_id'] = run_id
+
     # Handle evaluator type overrides
     if args.evaluators:
         # Multiple evaluators specified as comma-separated list
@@ -57,7 +65,7 @@ def main():
         # Single evaluator specified
         config['evaluator']['types'] = [args.evaluator]
         print(f"Using evaluator: {args.evaluator}")
-    
+
     if args.num_completions:
         active_llm = config.get('active_llm', 'claude')
         if active_llm in config.get('llms', {}):
@@ -66,7 +74,7 @@ def main():
     
     # Initialize evaluator and results manager
     evaluator = get_evaluator(config)
-    results_manager = ResultsManager(config)
+    results_manager = ResultsManager(config, run_id=config.get('run_id'))
     
     # Process single files or text if provided
     if args.reference_file and args.input_file:
@@ -181,6 +189,9 @@ def process_configured_files(config, evaluator, results_manager):
     elif evaluator_type == 'bertscore':
         all_results = results_manager.load_all_results(evaluator_type)
         launch_bertscore_dashboard(all_results)
+    # elif evaluator_type == 'multi':
+    #     all_results = results_manager.load_all_results(evaluator_type)
+    #     launch_multi_dashboard(all_results)
     else:
         print(f"No dashboard available for evaluator type: {evaluator_type}")
 

@@ -1,0 +1,30 @@
+You will be given an input text, with a list of Denial of Service threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Attack Types Coverage (1-5): Assesses whether the input describes similar methods used to launch Denial of Service (DoS) attacks. This includes (but is not limited to):
+
+- Network-level flooding attacks
+- Application-layer attacks
+- Resource starvation via legitimate but excessive requests
+- Logic bombs or scheduled triggers that exhaust resources
+- Exploitation of protocol weaknesses or malformed packets
+- Amplification attacks
+
+Evaluation Steps:
+
+1. Carefully read both the input and the reference Denial of Service threat list.
+2. Identify the attack types or DoS techniques described.
+3. Compare whether the input includes similar DoS attack types as the reference.
+4. Based on your analysis, assign a score from 1 (very poor coverage) to 5 (excellent coverage) for the Attack Types Coverage evaluation criterion.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):

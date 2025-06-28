@@ -1,0 +1,31 @@
+You will be given an input text, with a list of Tampering threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Tampering Methods Coverage (1-5): Assesses whether the input identifies similar attack techniques used to alter data, code, or system behavior. This includes (but is not limited to):
+
+- SQL Injection (SQLi) to manipulate database contents
+- Man-in-the-Middle (MITM) attacks intercepting and modifying data in transit
+- Direct file system or configuration file manipulation
+- Firmware tampering on embedded or IoT devices
+- Code injection or modification
+- Altering application logic through vulnerable APIs or interfaces
+- Exploiting weak access controls to modify critical assets
+
+Evaluation Steps:
+
+1. Carefully read both the input and the reference tampering threat list.
+2. Identify the attack methods or tampering techniques described.
+3. Compare whether the input includes similar tampering methods as the reference.
+4. Based on your analysis, assign a score from 1 (very poor coverage) to 5 (excellent coverage) for the Tampering Methods Coverage evaluation criterion.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):

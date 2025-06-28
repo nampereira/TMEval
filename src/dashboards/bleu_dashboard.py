@@ -69,10 +69,9 @@ def interpolate_color(score):
 
     return f'rgba({r},{g},{b},0.5)' 
 
-# Dasboard creation
-def launch_bleu_dashboard(all_results_grouped):
+def get_bleu_dashboard(all_results_grouped):
     """
-    Launches a Dash web application to visualize BLEU evaluation results.
+    Get a Dash to visualize BLEU evaluation results.
 
     Args:
         all_results_grouped: A dictionary mapping run IDs to lists of BLEU evaluation results with metadata.
@@ -83,8 +82,6 @@ def launch_bleu_dashboard(all_results_grouped):
         - Color-coded BLEU scores indicating performance.
     """
     app = Dash(__name__)
-
-    run_ids = list(all_results_grouped.keys())
 
     title_to_runs = {}
     for run_id, results in all_results_grouped.items():
@@ -101,7 +98,7 @@ def launch_bleu_dashboard(all_results_grouped):
 
     initial_title = titles[0] if titles else None
     initial_runs = title_to_runs.get(initial_title, []) if initial_title else []
-    run_options = [{'label': f"Test {r[:8]}...", 'value': r} for r in initial_runs]
+    run_options = [{'label': f"{r}", 'value': r} for r in initial_runs]
 
     app.layout = html.Div([
         dcc.Location(id='url', refresh=True),
@@ -149,7 +146,7 @@ def launch_bleu_dashboard(all_results_grouped):
 
         data_matrix = []
         for run_id in all_run_ids:
-            row = {"Test": run_id[:8] + "..."}
+            row = {"Test": run_id}
             total = 0
             count = 0
             
@@ -289,6 +286,12 @@ def launch_bleu_dashboard(all_results_grouped):
                 html.Hr(style={'marginTop': '40px', 'marginBottom': '40px'})
             ]
         return layout_children
+    
+    return app
+
+# Dasboard creation
+def launch_bleu_dashboard(all_results_grouped):
+    app = get_bleu_dashboard(all_results_grouped)
 
     threading.Timer(1.0, lambda: webbrowser.open("http://127.0.0.1:8050")).start()
     app.run(debug=False)

@@ -56,7 +56,7 @@ def launch_bertscore_dashboard(all_results_grouped):
 
     initial_title = titles[0] if titles else None
     initial_runs = title_to_runs.get(initial_title, []) if initial_title else []
-    run_options = [{'label': f"Test {r[:8]}...", 'value': r} for r in initial_runs]
+    run_options = [{'label': f"{r}", 'value': r} for r in initial_runs]
 
     app.layout = html.Div([
         dcc.Location(id='url', refresh=True),
@@ -104,7 +104,7 @@ def launch_bertscore_dashboard(all_results_grouped):
 
         data_matrix = []
         for run_id in all_run_ids:
-            row = {"Test": run_id[:8] + "..."}
+            row = {"Test": run_id}
             total = 0
             count = 0
             

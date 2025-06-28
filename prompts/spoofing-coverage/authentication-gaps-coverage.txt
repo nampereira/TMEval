@@ -1,0 +1,28 @@
+You will be given an input text, with a list of Spoofing threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Authentication Gaps Coverage (1-5): Assesses whether the input identifies comparable weaknesses in authentication mechanisms as those listed in the reference. This includes (but is not limited to):
+
+- Basic password vulnerabilities
+- Inadequate or missing Multi-Factor Authentication (MFA) implementation
+- Weak or improperly managed session handling
+- Exploitable flaws in identity providers or authentication protocols
+
+Evaluation Steps:
+
+1. Carefully read both the input and the reference spoofing threat list.
+2. Identify the authentication-related gaps or weaknesses mentioned in the input and the reference.
+3. Compare whether the input covers the same or comparable authentication weaknesses found in the reference.
+4. Based on this analysis, assign a score from 1 (very poor coverage) to 5 (excellent coverage) for the Authentication Gaps Coverage evaluation criterion.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):

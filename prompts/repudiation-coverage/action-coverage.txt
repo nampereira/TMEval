@@ -1,0 +1,30 @@
+You will be given an input text, with a list of Repudiation threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Action Coverage (1-5): Assesses whether the input identifies the same critical actions within the system that a malicious actor could later deny having performed, as also referenced in the reference. This includes (but is not limited to):
+
+- Configuration changes
+- Data deletions or edits
+- Administrative commands
+- Sensitive user actions
+- System or application-level interactions that must be auditable
+
+Evaluation Steps:
+
+1. Carefully read both the input and the reference repudiation threat list.
+2. Focus on actions that the attacker might perform and later repudiate.
+3. Identify the specific types of actions in the input and in the reference.
+4. Compare whether the actions in the input align with those in the reference in terms of auditability concerns.
+5. Based on the above, assign a score from 1 (very poor coverage) to 5 (excellent coverage) for the Action Coverage evaluation criterion.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):

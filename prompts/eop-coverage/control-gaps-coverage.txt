@@ -1,0 +1,32 @@
+You will be given an input text, with a list of Elevation of Privilege threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Control Gaps Coverage (1-5): Assesses whether the input identifies similar missing or weak security controls that, if properly implemented, would prevent privilege escalation. This includes (but is not limited to):
+
+- Inadequate Role-Based Access Control (RBAC) implementation
+- Lack of sandboxing or isolation for untrusted code
+- Weak privilege separation between users or processes
+- Services running with excessive privileges
+- Insecure inter-process communication (IPC)
+- Unpatched known vulnerabilities
+- Default or overly permissive configurations
+- Missing validation on flows that alter permissions or access levels
+
+Evaluation Steps:
+
+1. Carefully read both the input and the reference Elevation of Privilege threat list.
+2. Identify the control weaknesses or gaps mentioned in each.
+3. Compare whether the control gaps in the input align with those in the reference.
+4. Based on the analysis above, assign a score from 1 (very poor coverage) to 5 (excellent coverage) for the Control Gaps Coverage evaluation criterion.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):

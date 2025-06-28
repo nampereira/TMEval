@@ -1,0 +1,30 @@
+You will be given an input text, with a list of Repudiation threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Logging Gaps Coverage (1-5): Assesses whether the input identifies similar deficiencies in auditing and logging mechanisms that would enable repudiation, as mentioned in the reference. This includes (but is not limited to):
+
+- Missing or incomplete timestamps in log entries
+- Lack of unique identifiers for actions
+- Failure to log critical events
+- Logs that are vulnerable to tampering, deletion, or lack integrity controls
+- Logging mechanisms with insufficient granularity to reconstruct user actions
+- Absence of centralized or secure log storage
+
+Evaluation Steps:
+
+1. Carefully read both the input and the reference repudiation threat list.
+2. Identify the specific logging gaps or audit deficiencies in both.
+3. Compare whether the input lists the same (or comparable) issues as the reference.
+4. Based on the analysis, assign a score from 1 (very poor coverage) to 5 (excellent coverage) for the Logging Gaps Coverage evaluation criterion.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):
