@@ -54,6 +54,18 @@ class DimensionEvaluator(BaseEvaluator):
         if hasattr(self.llm_api, 'active_model_name'):
             llm_name = self.llm_api.active_model_name
 
+        possible_categories = ["Spoofing", "Tampering", "Repudiation", "Information Disclosure", "Elevation of Privilege", "Denial of Service"]
+
+        text_combined = f"{reference} {input_text}".lower()
+        inferred_category = None
+        first_position = float('inf')
+
+        for category in possible_categories:
+            pos = text_combined.find(category.lower())
+            if pos != -1 and pos < first_position:
+                inferred_category = category
+                first_position = pos
+
         results = {
             'evaluator_type': 'dimension',
             'llm': llm_name,
@@ -62,20 +74,25 @@ class DimensionEvaluator(BaseEvaluator):
         }
         
         for dim_name, dim_config in self.config.get('dimensions', {}).items():
-            prompt_file = dim_config.get('prompt_file', '')
+            dim_category = dim_config.get('category', 'All')
+
+            if dim_category != 'All' and dim_category != inferred_category:
+                continue
+
+            prompt_file = dim_config.get('prompt_file')
+            if not prompt_file:
+                continue
+
+            weight = dim_config.get('weight', 0.0)
             prompt_template = self._load_prompt_from_file(prompt_file)
-            
             prompt = prompt_template.format(reference=reference, input=input_text)
-            
-            # Get multiple responses from the LLM
             responses = self.llm_api.generate(prompt)
-            
-            # Store the responses along with dimension information
+
             results['dimensions'][dim_name] = {
                 'responses': responses,
-                'weight': dim_config.get('weight', 0.25)
+                'weight': weight
             }
-        
+
         return results
     
     def _load_prompt_from_file(self, prompt_file: str) -> str:

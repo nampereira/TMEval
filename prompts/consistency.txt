@@ -12,7 +12,7 @@ Consistency (1-5): the factual alignment between the input and the reference. A 
 Evaluation Steps:
 
 1. Read the reference carefully and identify the main facts and details it presents.
-2. Read the input and compare it to the reference. Check for factual errors or unsupported statements.
+2. Compare the input with the reference. Check for factual errors or unsupported statements.
 3. Assess additional threats that may initially seem dissimilar in the input, checking for consistency with the context of the reference.
 4. Assign a score for consistency based on the evaluation criteria.
 

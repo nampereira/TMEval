@@ -1,0 +1,31 @@
+You will be given an input text, with a list of Information Disclosure threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Protection Gaps Coverage (1-5): Assesses whether the input identifies similar missing or weak protection mechanisms aimed at preserving confidentiality of sensitive data, as described in the reference. This includes (but is not limited to):
+
+- Absence of encryption for data at rest
+- Absence of encryption for data in transit
+- Weak or misconfigured access controls
+- Lack of proper data masking for sensitive fields
+- No Data Loss Prevention mechanisms in place
+- Inadequate network segmentation exposing confidential data
+- Logging or error messages leaking sensitive information
+
+Evaluation Steps:
+
+1. Carefully read both the input and the reference Information Disclosure threat list.
+2. Identify any gaps in confidentiality-preserving controls mentioned in both.
+3. Compare if the protection gaps identified in the input match or align with the reference.
+4. Based on the comparison, assign a score from 1 (very poor coverage) to 5 (excellent coverage) for the Protection Gaps Coverage evaluation criterion.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):

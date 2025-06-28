@@ -1,0 +1,28 @@
+You will be given an input text, with a list of Information Disclosure threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Data Coverage (1-5): Assesses whether the input identifies the same sensitive data categories that could be exposed as listed in the reference. This includes (but is not limited to):
+
+- Credentials
+- Intellectual property
+- Financial data
+- Internal system architecture details
+
+Evaluation Steps:
+
+1. Carefully read both the input and the reference Information Disclosure threat list.
+2. Identify the specific sensitive data categories mentioned in the input and in the reference.
+3. Compare whether the data categories identified in the input align with those in the reference.
+4. Based on the above, assign a score from 1 (very poor coverage) to 5 (excellent coverage) for the Data Coverage evaluation criterion.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):

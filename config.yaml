@@ -22,7 +22,7 @@ llms:
   
   gemini:
     api_key: ${GEMINI_API_KEY}
-    model: "gemini-1.5-flash"  # Updated to use recommended non-deprecated model
+    model: "gemini-1.5-pro"  # Updated to use recommended non-deprecated model
     api_url: "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
     num_completions: 8  # Number of completion choices to generate (if we want a Scoring Function based on multiple generations, as proposed by the G-EVAL paper)
     throttling:
@@ -67,23 +67,103 @@ evaluator:
     rouge_types: ["rouge1", "rouge2", "rougeL"]  # Types of ROUGE scores to calculate
 
 # Dimensions for the dimension-based evaluator
-# Weights are used to compute the score; make sure they add to 1
+# Weights are used to compute the score; make sure they add to 1 for each category
 dimensions:
-  relevance:
-    prompt_file: "prompts/relevance.txt"
-    weight: 0.25
-  
+  # Coverage dimension per category
+  # Denial of Service
+  attack-types-coverage:
+    prompt_file: "prompts/dos-coverage/attack-types-coverage.txt"
+    category: Denial of Service
+    weight: 0.20
+  dos-protection-gaps-coverage:
+    prompt_file: "prompts/dos-coverage/protection-gaps-coverage.txt"
+    category: Denial of Service
+    weight: 0.20
+  resource-coverage:
+    prompt_file: "prompts/dos-coverage/resource-coverage.txt"
+    category: Denial of Service
+    weight: 0.20
+
+  # Elevation of Privilege
+  control-gaps-coverage:
+    prompt_file: "prompts/eop-coverage/control-gaps-coverage.txt"
+    category: Elevation of Privilege
+    weight: 0.20
+  exploit-methods-coverage:
+    prompt_file: "prompts/eop-coverage/exploit-methods-coverage.txt"
+    category: Elevation of Privilege
+    weight: 0.20
+  vulnerability-point-coverage:
+    prompt_file: "prompts/eop-coverage/vulnerability-point-coverage.txt"
+    category: Elevation of Privilege
+    weight: 0.20
+
+  # Information Disclosure
+  attack-methods-coverage:
+    prompt_file: "prompts/info-disclosure-coverage/attack-methods-coverage.txt"
+    category: Information Disclosure
+    weight: 0.20
+  data-coverage:
+    prompt_file: "prompts/info-disclosure-coverage/data-coverage.txt"
+    category: Information Disclosure
+    weight: 0.20
+  id-protection-gaps-coverage:
+    prompt_file: "prompts/info-disclosure-coverage/protection-gaps-coverage.txt"
+    category: Information Disclosure
+    weight: 0.20
+
+  # Repudiation
+  action-coverage:
+    prompt_file: "prompts/repudiation-coverage/action-coverage.txt"
+    category: Repudiation
+    weight: 0.20
+  rep-attack-vectors-coverage:
+    prompt_file: "prompts/repudiation-coverage/attack-vectors-coverage.txt"
+    category: Repudiation
+    weight: 0.20
+  logging-gaps-coverage:
+    prompt_file: "prompts/repudiation-coverage/logging-gaps-coverage.txt"
+    category: Repudiation
+    weight: 0.20
+
+  # Spoofing
+  spo-attack-vectors-coverage:
+    prompt_file: "prompts/spoofing-coverage/attack-vectors-coverage.txt"
+    category: Spoofing
+    weight: 0.20
+  authentication-gaps-coverage:
+    prompt_file: "prompts/spoofing-coverage/authentication-gaps-coverage.txt"
+    category: Spoofing
+    weight: 0.20
+  entity-coverage:
+    prompt_file: "prompts/spoofing-coverage/entity-coverage.txt"
+    category: Spoofing
+    weight: 0.20
+
+  # Tampering
+  asset-coverage:
+    prompt_file: "prompts/tampering-coverage/asset-coverage.txt"
+    category: Tampering
+    weight: 0.20
+  integrity-gaps-coverage:
+    prompt_file: "prompts/tampering-coverage/integrity-gaps-coverage.txt"
+    category: Tampering
+    weight: 0.20
+  tampering-methods-coverage:
+    prompt_file: "prompts/tampering-coverage/tampering-methods-coverage.txt"
+    category: Tampering
+    weight: 0.20
+
+  # Common dimensions
   consistency:
     prompt_file: "prompts/consistency.txt"
-    weight: 0.25
-
-  coverage:
-    prompt_file: "prompts/coverage.txt"
-    weight: 0.25
+    category: All
+    weight: 0.30
 
   plausibility:
     prompt_file: "prompts/plausibility.txt"
-    weight: 0.25
+    category: All
+    weight: 0.10
 
 # Input file pairs and metadata
 files:

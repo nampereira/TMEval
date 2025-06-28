@@ -8,7 +8,7 @@ import uuid
 class ResultsManager:
     """Handles aggregation, formatting, and persistent storage of evaluation results."""
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Dict[str, Any], run_id: Optional[str] = None):
         """
         Initialize the ResultsManager with the given configuration.
 
@@ -28,8 +28,8 @@ class ResultsManager:
         self.evaluator_types = evaluator_types
         self.is_multi_evaluator = len(evaluator_types) > 1
 
-        # Generate a unique identifier for this run instance to track result files
-        self.run_id = uuid.uuid4().hex
+        # Run name given by the user or generate a unique identifier for this run instance to track result files
+        self.run_id = run_id or uuid.uuid4().hex
 
     def save_results(self, 
                      results: Dict[str, Any], 

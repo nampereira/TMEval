@@ -1,0 +1,29 @@
+You will be given an input text, with a list of Tampering threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Integrity Gaps Coverage (1-5): Assesses whether the input identifies similar missing or weak protection mechanisms that are meant to ensure the integrity of systems and data, as referenced. This includes (but is not limited to):
+
+- Absence of cryptographic hashes for file or data integrity verification
+- Lack of digital signatures to ensure code authenticity
+- Inadequate or missing integrity checks in communication protocols
+- Insufficient input validation, leading to unauthorized modification of data
+- Missing integrity controls in database operations or configuration files
+
+Evaluation Steps:
+
+1. Carefully read both the input and the reference tampering threat list.
+2. Identify integrity-related gaps or missing protections described in each.
+3. Compare whether the input includes the same or equivalent protection weaknesses mentioned in the reference.
+4. Based on your analysis, assign a score from 1 (very poor coverage) to 5 (excellent coverage) for the Integrity Gaps Coverage evaluation criterion.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):

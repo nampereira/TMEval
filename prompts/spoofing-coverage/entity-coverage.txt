@@ -1,0 +1,28 @@
+You will be given an input text, with a list of Spoofing threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Entity Coverage (1-5): Assesses whether the input includes the same key entities that can be spoofed as those in the reference. This includes (but is not limited to):
+
+- User accounts
+- System services or APIs
+- Hardware devices
+- Application components or microservices
+
+Evaluation Steps:
+
+1. Carefully read both the input and the reference spoofing threat list.
+2. Identify the entities in both the input and the reference that are susceptible to impersonation.
+3. Compare the entities mentioned in the input with those in the reference, checking for alignment and completeness.
+4. Based on the analysis above, assign a score from 1 (very poor coverage) to 5 (excellent coverage) for the Entity Coverage evaluation criterion.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):

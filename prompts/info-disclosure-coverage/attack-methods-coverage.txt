@@ -1,0 +1,31 @@
+You will be given an input text, with a list of Information Disclosure threats identified for an application. The table is given in a Markdown format with the following columns
+Threat Type, Scenario, Potential Impact.
+
+Your task is to rate the input on one metric.
+
+Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
+
+Evaluation Criteria:
+
+Attack Methods Coverage (1-5): Assesses whether the input identifies similar attack techniques that could lead to the exposure of sensitive information. This includes (but is not limited to):
+
+- Exploitation of misconfigured access controls to read sensitive data
+- Network sniffing or packet capture to intercept data in transit
+- SQL Injection or NoSQL Injection to extract confidential data
+- Exploiting unencrypted data storage or backups
+- Leveraging insecure APIs or endpoints to access private information
+- Side-channel attacks revealing sensitive data indirectly
+- Social engineering to obtain sensitive credentials or information
+
+Evaluation Steps:
+
+1. Carefully read both the input and the reference Information Disclosure threat list.
+2. Identify the attack methods or techniques described that lead to data exposure.
+3. Compare whether the input includes similar attack vectors as the reference.
+4. Based on the analysis, assign a score from 1 (very poor coverage) to 5 (excellent coverage) for the Attack Methods Coverage evaluation criterion.
+
+Reference: {reference}
+
+Input: {input}
+
+Evaluation Form (scores ONLY):
