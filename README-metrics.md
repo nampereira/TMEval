@@ -7,10 +7,12 @@ TMEval supports multiple evaluation metrics, each providing different insights i
 ### 1. Dimension-based (LLM)
 
 Uses Large Language Models to evaluate text quality across multiple dimensions:
-- **Relevance**: How well the input text captures important content from the reference
-- **Consistency**: Factual alignment between the input text and reference text
-- **Fluency**: Quality of individual sentences in the input text
-- **Coherence**: How well sentences flow together as a whole
+- **Plausibility**: Do the listed threats technically align with the inferred system characteristics from the reference?
+- **Consistency**: Do the listed threats align with the reference, without unsupported or contradictory information?
+- **Coverage**: Vary from STRIDE category to STRIDE category. In general, each one includes the following three dimensions:
+  - **Targets Coverage**: Are the same targets identified as affected?
+  - **Weaknesses Coverage**: Are similar vulnerabilities or exposures highlighted?
+  - **Attacks Coverage**: Are comparable attack methods or strategies described?
 
 ### 2. BERTScore
 
@@ -49,12 +51,47 @@ evaluator:
 
 ## Metric-Specific Configuration
 
+### Dimension-based
+
+```yaml
+dimensions:
+  # Coverage dimension per category
+  # Denial of Service
+  attack-types-coverage:
+    prompt_file: "prompts/dos-coverage/attack-types-coverage.txt"
+    category: Denial of Service
+    weight: 0.20
+  dos-protection-gaps-coverage:
+    prompt_file: "prompts/dos-coverage/protection-gaps-coverage.txt"
+    category: Denial of Service
+    weight: 0.20
+  resource-coverage:
+    prompt_file: "prompts/dos-coverage/resource-coverage.txt"
+    category: Denial of Service
+    weight: 0.20
+  # ... for each category
+
+  # Common dimensions
+  consistency:
+    prompt_file: "prompts/consistency.txt"
+    category: All
+    weight: 0.30
+
+  plausibility:
+    prompt_file: "prompts/plausibility.txt"
+    category: All
+    weight: 0.10
+```
+
 ### BERTScore
 
 ```yaml
 bertscore:
-  implementation: "local-model"  # Uses a local model
-  model: "roberta-large"  # Transformer model to use
+  implementation: "local-model"  # Uses a local model for BERTScore
+  model: "roberta-large"  # Model to use for BERTScore (roberta-large is the default)
+  idf: true  # Use inverse document frequency weighting
+  rescale_with_baseline: true  # Scale scores to be more interpretable
+  verbose: false  # Set to true to see detailed progress and warnings
 ```
 
 ### BLEU
@@ -80,14 +117,70 @@ Run a specific metric:
 ```bash
 python main.py --evaluator bleu
 ```
+With this command, the corresponding results will be generated in the results directory, which should be reviewed. In addition, a simple interactive dashboard for the respective metric will be launched on port 8050.
 
 Run multiple metrics:
 
 ```bash
-python main.py --evaluators dimension,bertscore,bleu,rouge
+python main.py --evaluators dimension,bertscore, bleu,rouge
 ```
 
 ## Understanding Results
+
+### Dimension-based Results
+
+```json
+{
+  "evaluator_type": "dimension",
+  "llm": "gemini-1.5-pro",
+  "num_completions": 8,
+  "dimensions": {
+    "asset-coverage": {
+      "responses": [
+        "Asset Coverage: 4\n",
+        "Asset Coverage: 4\n",
+        "Asset Coverage: 4\n",
+        "Asset Coverage: 4\n",
+        "Asset Coverage: 4\n",
+        "Asset Coverage: 4\n",
+        "Asset Coverage: 4\n",
+        "Asset Coverage: 4\n"
+      ],
+      "weight": 0.2,
+      "average": 4.0
+    },
+    // ... for each dimension
+    "score": 3.2875000000000005
+  }
+}
+```
+
+### BERTScore Results
+
+```json
+{
+  "evaluator_type": "bertscore",
+  "implementation": "local-model",
+  "model": "roberta-large",
+  "idf": true,
+  "rescale_with_baseline": true,
+  "scores": {
+    "overall": {
+      "f1": 0.09459596375624339
+    },
+    "sentence_level": [
+      {
+        "input": "Since all projects share a single MySQL database server, a SQL injection vulnerability in the backend of one SUNDIAL project could be exploited to modify or delete data in a different project's database (e.g., tampering with the RELiEF project's data from a less secure project's endpoint).  Corruption or destruction of critical and confidential sustainability data for multiple projects, leading to incorrect environmental assessments and invalid research outcomes.",
+        "best_reference": "Docker containers if running with root privileges pose a significant security risk. If a container from any project accepts data through API requests without properly validating for malicious shell commands, an attacker could potentially exploit the container.  Could potentially escape the container and compromise other project containers or even the underlying host system.",
+        "precision": 0.03307128697633743,
+        "recall": 0.14115795493125916,
+        "f1": 0.08801961690187454
+      },
+      // ... for each input
+    ]
+  }
+}
+```
 
 ### BLEU Results
 
@@ -106,10 +199,11 @@ python main.py --evaluators dimension,bertscore,bleu,rouge
     },
     "sentence_level": [
       {
-        "input": "Climate change involves long-term shifts in temperature and weather patterns.",
-        "bleu": 0.732
+        "input": "The platform performs Life Cycle Assessments (LCA) and creates complex diagrams. A malicious authenticated user could repeatedly trigger computationally expensive assessments or create models with an excessive number of processes and flows, overwhelming the backend Node.js container's CPU/memory resources.  The application becomes slow or unresponsive for all other users, preventing them from collecting or analyzing data.",
+        "best_reference": "An attacker or malicious user could exploit the fact that the MFA process does not have an appropriate consumption limit setting, allowing multiple logins and excessive email links to be sent.  Delays or failures in delivering MFA links for other authentication attempts may occur.",
+        "bleu_for_this_sentence": 0.011308221067292446
       },
-      // More sentences...
+      // ... for each input
     ]
   }
 }
@@ -142,17 +236,33 @@ python main.py --evaluators dimension,bertscore,bleu,rouge
     },
     "sentence_level": [
       {
-        "input": "Climate change involves long-term shifts in temperature and weather patterns.",
-        "scores": {
-          "rouge1": {
-            "precision": 0.682,
-            "recall": 0.450,
-            "fmeasure": 0.542
+        {
+          "input": "A malicious user associated with an LCA model could manipulate API requests to edit inventory flow attributes that were created by another user. This bypasses the business rule that 'Only the user who created an entry flow is allowed to edit its attributes' if backend authorization is not properly implemented.  Unauthorized modification of scientific data, compromising the integrity and validity of the entire Life Cycle Assessment.",
+          "best_reference": {
+            "rouge1": "Docker containers if running with root privileges pose a significant security risk. If a container from any project accepts data through API requests without properly validating for malicious shell commands, an attacker could potentially exploit the container.  Could potentially escape the container and compromise other project containers or even the underlying host system.",
+            "rouge2": "Docker containers if running with root privileges pose a significant security risk. If a container from any project accepts data through API requests without properly validating for malicious shell commands, an attacker could potentially exploit the container.  Could potentially escape the container and compromise other project containers or even the underlying host system.",
+            "rougeL": "Docker containers if running with root privileges pose a significant security risk. If a container from any project accepts data through API requests without properly validating for malicious shell commands, an attacker could potentially exploit the container.  Could potentially escape the container and compromise other project containers or even the underlying host system."
           },
-          // More ROUGE scores...
-        }
+          "rouge_for_this_sentence": {
+            "rouge1": {
+              "fmeasure": 0.20253164556962025,
+              "precision": 0.19047619047619047,
+              "recall": 0.21621621621621623
+            },
+            "rouge2": {
+              "fmeasure": 0.025974025974025976,
+              "precision": 0.024390243902439025,
+              "recall": 0.027777777777777776
+            },
+            "rougeL": {
+              "fmeasure": 0.10126582278481013,
+              "precision": 0.09523809523809523,
+              "recall": 0.10810810810810811
+            }
+          }
+        },
       },
-      // More sentences...
+      // ... for each input
     ]
   }
 }
